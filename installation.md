@@ -42,8 +42,8 @@ cd Desktop/MA_Crossover_Bot
 ## Install Dependencies
 
 Run the following commands:
-pip install MetaTrader5==5.0.47
-pip install pandas
+- pip install MetaTrader5==5.0.47  
+- pip install pandas
 
 
 ---
