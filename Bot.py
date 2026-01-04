@@ -24,6 +24,8 @@ class TradingBot:
         self.lot = 0.1 # lot size
         self.tp = 10 # take profit price
         # self.sl = -6
+        self.looptime = 10
+
         self.new_candle = pd.DataFrame()
         self.trade_flag = False # Trade indicator
         self.last_candle_time = None # last candle time
@@ -36,11 +38,6 @@ class TradingBot:
 
         self.opf_long = False # to identify when there is an open position for long
         self.opf_short = False
-
-
-        # self.tsma_period = 200
-        # self.up_trend = False # uptrend flag
-        # self.down_trend = False # downtrend flag
 
     # function to check for open positions
     def check_for_positions(self):
@@ -130,25 +127,6 @@ class TradingBot:
         # Assign the last row of the DataFrame to self.new_candle
         self.new_candle = self.ticks_df.iloc[[-1]].reset_index(drop=True)
 
-        # specific_columns = self.ticks_df[["time", "close", "fast_sma", "slow_sma", "prev_fast_sma", "crossover"]]
-        # pd.set_option("display.max_columns", None)
-        # print(specific_columns)
-
-        # print(self.ticks_df)
-
-    # a function that will indentify trend
-    # def identify_trend(self):
-    #     # ensure the dataframe i not empty
-    #     if not self.new_candle.empty:
-    #         for index, row in self.new_candle.iterrows():
-    #             if row["close"] > row["trend"]: # check for uptrend
-    #                 self.up_trend = True # set uptrend to be True
-    #                 self.down_trend = False  # and downtrend to be false
-    #             elif row["close"] < row["trend"]: # check for downtrend
-    #                 self.down_trend = True # if found change self.down_trend to True
-    #                 self.up_trend = False # and uptrend to false
-    #             else:
-    #                 return None
 
     # function to update the trade flag and last candle time
     def update_trade_flag(self): # to prevent multiple trading from opening in the same candle
@@ -245,46 +223,28 @@ class TradingBot:
             if not self.new_candle.empty:
                 if self.new_candle["crossover"].iloc[0] == "None":
                     print("no crossover")  # print the DB is it is None
-                    # print(self.trade_flag)
-                    # print(self.new_candle)
-                    # print(self.down_trend)
+
 
                 elif (self.new_candle["crossover"].iloc[0] == "bullish crossover"
                       and not self.trade_flag
                       and not self.opf_long):
                     self.open_position(mt5.ORDER_TYPE_BUY)
                     self.trade_flag = True
-                    # self.close_short = True
-                    # print(self.trade_flag)
-                    # and self.up_trend is True
-                    # print("buy") #print buy and the db is it is bullish crossover
-                    # print(self.new_candle)
+
 
                 elif (self.new_candle["crossover"].iloc[0] == "bearish crossover"
                       and not self.trade_flag
                       and not self.opf_short):
                     self.open_position(mt5.ORDER_TYPE_SELL)
                     self.trade_flag = True
-                    # self.close_long = True
-                    # print(self.trade_flag)
-                    # and self.down_trend is True
-
-                    # print("sell") # print sell and DB is it is bearish crossover
-                    # print(self.new_candle)
-
+                    
 
             else:
                 print("no new candle data available")
 
-            time.sleep(5)  #wait for a minute
+            time.sleep(self.looptime)  #wait for a 5 seconds
 
 
-bot = TradingBot()
-# bot.check_for_positions()
-# bot.get_sma_data()  # initialize data fetch
-# bot.detect_crossover()
-# bot.close_positions()
-# self.identify_trend()
-# self.update_trade_flag()  # call method to update trade flag and last candle time
-# bot.identify_tred()
-bot.run()
+if __name__ == "__main__":
+    bot = TradingBot()
+    bot.run()
