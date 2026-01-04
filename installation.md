@@ -71,5 +71,4 @@ The following parameters can be modified directly in the code:
 - Number of candles fetched
 
 
-
-Check the customization.md file for details on how to change the parameters
+Check the [`customization.md`](customization.md) file for details on how to change the parameters
